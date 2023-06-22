@@ -1,50 +1,29 @@
+<!-- feedback.html -->
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Result</title>
-  <style>
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    .logo {
-      margin-bottom: 20px;
-    }
-    button {
-      background-color: #eee;
-      padding: 10px 20px;
-      border: none;
-      cursor: pointer;
-    }
-    button:active {
-      background-color: #888;
-    }
-  </style>
+    <title>Summary Feedback</title>
 </head>
 <body>
-  <div class="container">
-    <img class="logo" src="/static/Racoon_summary.jpg" alt="Logo" style="width: 600px; height: 300px; margin-bottom: 5px;">
-    <p>제가 논문을 해치웠어요!</p>
-    <form action="/save" method="POST">
-          {% for index in range(text|length) %}
-          <div>
-            <h3>Section {{ index }}</h3>
-            <p>{{ text[index] }}</p>
-            <p>Summary: {{ summary0[index] }}</p>
-            <input type="hidden" name="summary[]" value="{{ summary0[index] }}">
-            <button name="label[]" value="1">Good</button>
-            <button name="label[]" value="0">Bad</button>
-             <p>Summary: {{ summary1[index] }}</p>
-            <input type="hidden" name="summary[]" value="{{ summary1[index] }}">
-            <button name="label[]" value="1">Good</button>
-            <button name="label[]" value="0">Bad</button>
-          </div>
-          {% endfor %}
-            <button type="submit">Submit</button>
+    <h1>Raccoon-Feedback</h1>
+    
+    {% for index in range(section_length) %}
+        <h2>Section: {{ section[index] }}</h2>
+        <p>Text: {{ text[index] }}</p>
+        <p>Summary 1: {{ summary0[index] }}</p>
+        <p>Summary 2: {{ summary1[index] }}</p>
+        
+        <form method="POST" action="/save">
+            <input type="radio" name="summary_feedback" value="summary0"> Summary 1
+            <input type="radio" name="summary_feedback" value="summary1"> Summary 2
+            <input type="hidden" name="text" value="{{ text[index] }}">
+            <input type="hidden" name="summary0" value="{{ summary0[index] }}">
+            <input type="hidden" name="summary1" value="{{ summary1[index] }}">
+            <input type="submit" value="Submit Feedback">
         </form>
-  </div>
+        
+        <hr>
+    {% endfor %}
 </body>
 </html>

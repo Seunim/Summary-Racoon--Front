@@ -59,12 +59,12 @@ def pdf_to_text_spans(src):
 
         if cnt < maxlen and text.strip() == toc[cnt+1]:
             if buf:
-                res += [{'section': toc[cnt], 'text': buf}]
+                res += [{"section": toc[cnt], "text": buf}]
                 buf = ""
             cnt += 1
         
         else:
             buf += text
 
-    res += [{'section': toc[cnt], 'text': buf}]
+    res += [{"section": toc[cnt], "text": buf}]
     return res
