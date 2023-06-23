@@ -1,30 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Paper Racoon-pdf</title>
+  <title>Paper Raccoon-pdf</title>
   <style>
     body {
       text-align: center;
       margin-top: 20px;
     }
     h1 {
+      margin-bottom: 0px;
+      font-size: 32px; /* Increased font size */
+    }
+    img {
+      width: 600px; /* Increased width */
+      height: 400px;
+      margin: 0 auto; /* Increased height */
+      margin-bottom: 15px; /* Increased margin */
+    }
+    form {
+      font-size: 27px; /* Increased font size */
+      margin-top: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 1px;
+    }
+    input[type="file"] {
       margin-bottom: 10px;
     }
-    #drop-area {
-      border: 2px dashed #ccc;
-      border-radius: 5px;
-      padding: 20px;
-      cursor: pointer;
-      margin-top: 20px;
+    button[type="submit"] {
+      font-size: 16px; /* Increased font size */
     }
-    #drop-area.highlight {
-      border-color: #000;
+    #summary {
+      font-size: 16px; /* Increased font size */
     }
   </style>
 </head>
 <body>
-  <h1>Paper Racoon</h1>
-  <img src="/static/Racoon_index.jpg" alt="Upload Picture" style="width: 300px; height: 200px; margin-bottom: 5px;">
+  <h1>Paper Raccoon</h1>
+  <img src="static\Raccoon_index2.png" alt="Upload Picture" style="width: 800px; height: 400px; margin-bottom: 15px;">
   <div>
     <form action="/summarize" method="POST" enctype="multipart/form-data">
       <label for="pdf_file">제게 논문을 주시면 해치워드릴게요</label><br>

@@ -4,6 +4,11 @@
 <html>
 <head>
     <title>Summary Feedback</title>
+    <script>
+        function showAlert() {
+            alert("Text and summary saved successfully.");
+        }
+    </script>
 </head>
 <body>
     <h1>Raccoon-Feedback</h1>
@@ -20,10 +25,13 @@
             <input type="hidden" name="text" value="{{ text[index] }}">
             <input type="hidden" name="summary0" value="{{ summary0[index] }}">
             <input type="hidden" name="summary1" value="{{ summary1[index] }}">
-            <input type="submit" value="Submit Feedback">
+            
+        
+    {% endfor %}
+            <a href='#'><input type="submit" value="Submit Feedback", onclick="alert('성공적으로 저장했습니다')"></a>        
         </form>
         
         <hr>
-    {% endfor %}
+    
 </body>
 </html>

@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Form, UploadFile, File
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi import Request
 import requests
 import json
@@ -9,9 +9,14 @@ from fastapi.staticfiles import StaticFiles
 import boto3
 import tempfile
 from fastapi import Form
+import botocore
+from typing import List, Dict
 
 # Create an S3 client
-s3_raccoon= boto3.client('s3', region_name = 'ap-northeast-2')
+s3_raccoon = boto3.client('s3', 
+                          region_name='ap-northeast-2', 
+                          aws_access_key_id='AKIARDCFHR46YHVMFDUY', 
+                          aws_secret_access_key='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')
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
@@ -49,9 +54,9 @@ async def summarize(request: Request, pdf_file: UploadFile = File(...)):
     response = requests.get(inference_server_url, data=json.dumps(data))
 
     if response.status_code == 200:
-        # Process the response from the inference server
+        # Process the response fro
+        # m the inference server
         response_dict = response.json()
-        print(response_dict)
 
         summary0 = response_dict["inference_results0"]
         summary0 = [item for sublist in summary0 for item in sublist]
@@ -73,44 +78,65 @@ async def summarize(request: Request, pdf_file: UploadFile = File(...)):
     else:
         return {"error": "Failed to retrieve summary from the inference server"}
 
+
 @app.post("/save")
 async def save_data(
-    summary_feedback: str = Form(...),
-    text: str = Form(...),
-    summary0: str = Form(...),
-    summary1: str = Form(...)
+    request: Request,
+    summary_feedback: List[str] = Form(...),
+    text: List[str] = Form(...),
+    summary0: List[str] = Form(...),
+    summary1: List[str] = Form(...)
 ):
-    summary=[]
-    text = text
-    if summary_feedback == summary1:
-        summary.append(summary1)
-        summary.append(summary0)
-    elif summary_feedback == summary0:
-        summary.append(summary0)
-        summary.append(summary1)
+    print(summary_feedback)
+    print(text)
+    print(summary0)
+    print(summary1)
+    data_list: List[Dict[str, str]] = []
 
-    data = {"summary": summary, "text": text}
+    for feedback, text_val, summary0_val, summary1_val in zip(summary_feedback, text, summary0, summary1):
+        summary = []
+        if feedback == 'summary1':
+            summary.append(summary1_val)
+            summary.append(summary0_val)
+        elif feedback == 'summary0':
+            summary.append(summary0_val)
+            summary.append(summary1_val)
+    
+
+        data = {"summary": summary, "text": text_val}
+        data_list.append(data)
+    
+    print(data_list)
 
     # Convert the data to JSON
-    json_data = json.dumps(data)
+    json_data = json.dumps(data_list)
 
     # Specify the existing file name in S3
     bucket_name = "paper.raccoon-reward.texts"
     file_name = "summarydata.txt"
 
-    # Get the existing content of the file
-    response = s3_raccoon.get_object(Bucket=bucket_name, Key=file_name)
-    existing_data = response["Body"].read().decode()
+    try:
+        # Get the existing content of the file
+        response = s3_raccoon.get_object(Bucket=bucket_name, Key=file_name)
+        existing_data = response["Body"].read().decode()
 
-    # Append the new JSON data to the existing content
-    updated_data = existing_data + "\n" + json_data
+        # Append the new JSON data to the existing content
+        updated_data = existing_data + "\n" + json_data
+    except botocore.exceptions.ClientError as e:
+        if e.response["Error"]["Code"] == "NoSuchKey":
+            # Create a new file with the JSON data
+            updated_data = json_data
+            file_name = "summarydata.txt"
+        else:
+            # Handle other exceptions
+            raise
 
     # Save the updated data back to the file in S3
     s3_raccoon.put_object(Body=updated_data, Bucket=bucket_name, Key=file_name)
 
-    return {"message": "Text and summary saved successfully."}
-    
+    return templates.TemplateResponse("index.html", {"request": request})
 
+    
 
 
 if __name__ == "__main__":
