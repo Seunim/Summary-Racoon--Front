@@ -134,6 +134,8 @@ async def save_data(
     # Save the updated data back to the file in S3
     s3_raccoon.put_object(Body=updated_data, Bucket=bucket_name, Key=file_name)
 
+    print(updated_data)
+
     return templates.TemplateResponse("index.html", {"request": request})
 
     
