@@ -15,8 +15,8 @@ from typing import List, Dict
 # Create an S3 client
 s3_raccoon = boto3.client('s3', 
                           region_name='ap-northeast-2', 
-                          aws_access_key_id='AKIARDCFHR46YHVMFDUY', 
-                          aws_secret_access_key='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')
+                          aws_access_key_id='', 
+                          aws_secret_access_key='')
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
