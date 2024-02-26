@@ -29,7 +29,7 @@ templates.env.filters["to_json"] = to_json_filter
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-inference_server_url = "https://asdasdinfer.run.goorm.site/inference"  # Inference server URL
+inference_server_url = ""  # Inference server URL
 
 @app.get("/", response_class=HTMLResponse)
 async def read_item(request: Request):
