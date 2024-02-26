@@ -87,10 +87,6 @@ async def save_data(
     summary0: List[str] = Form(...),
     summary1: List[str] = Form(...)
 ):
-    print(summary_feedback)
-    print(text)
-    print(summary0)
-    print(summary1)
     data_list: List[Dict[str, str]] = []
 
     for feedback, text_val, summary0_val, summary1_val in zip(summary_feedback, text, summary0, summary1):
@@ -105,8 +101,6 @@ async def save_data(
 
         data = {"summary": summary, "text": text_val}
         data_list.append(data)
-    
-    print(data_list)
 
     # Convert the data to JSON
     json_data = json.dumps(data_list)
@@ -133,8 +127,6 @@ async def save_data(
 
     # Save the updated data back to the file in S3
     s3_raccoon.put_object(Body=updated_data, Bucket=bucket_name, Key=file_name)
-
-    print(updated_data)
 
     return templates.TemplateResponse("index.html", {"request": request})
 
